@@ -27,7 +27,7 @@ jobs:
 
       - name: Build with MSBuild
         run: |
-          msbuild src/view.vcproj /p:Configuration=Release
+          msbuild view.vcproj /p:Configuration=Release
         continue-on-error: true
 
       - name: Upload build artifacts
