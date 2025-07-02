@@ -1,0 +1,40 @@
+# This workflow attempts to build the project on push to master branch.
+# Note: Windows CE 6.0 toolchain is not available on GitHub runners by default.
+# You must provide the toolchain or adjust the script to use a cross-compiler if possible.
+
+name: Build VNCView (Windows CE 6.0 x86)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # If you have a Windows CE toolchain, add steps here to install or configure it
+      # - name: Install Windows CE toolchain
+      #   run: |
+      #     echo "Install your toolchain here"
+
+      - name: Build with MSBuild
+        run: |
+          msbuild src/view.vcproj /p:Configuration=Release
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VNCView-build-output
+          path: |
+            src/Release/
+            src/win/Release/
